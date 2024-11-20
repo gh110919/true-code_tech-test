@@ -1,0 +1,34 @@
+{
+  "create": [
+    {
+      "table": "products",
+      "fields": {
+        "id": "string",
+        "title": "string",
+        "description": "string",
+        "cost": "integer",
+        "discounted_price": "integer",
+        "article_number": "integer",
+        "id.id.products_photos": "foreign"
+      }
+    },
+    {
+      "table": "photos",
+      "fields": {
+        "id": "string",
+        "src": "string",
+        "alt": "string"
+      }
+    },
+    {
+      "table": "products_photos",
+      "fields": {
+        "id": "string",
+        "products_id": "string",
+        "photos_id": "string",
+        "products_id.id.products": "foreign",
+        "photos_id.id.photos": "foreign"
+      }
+    }
+  ]
+}

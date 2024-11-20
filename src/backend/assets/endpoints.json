@@ -1,0 +1,5 @@
+[
+  { "endpoint": "/products", "table": "products" },
+  { "endpoint": "/photos", "table": "photos" },
+  { "endpoint": "/products_photos", "table": "products_photos" }
+]
