@@ -1,11 +1,11 @@
-import { json } from "express"; // Импортируем метод json из express для работы с JSON-данными.
-import { drop } from "./helpers/drop"; // Импортируем функцию drop из файла helpers/drop.
-import { migrate } from "./helpers/migrate"; // Импортируем функцию migrate из файла helpers/migrate.
-import { crud } from "./middleware/crud"; // Импортируем middleware crud из файла middleware/crud.
-import { imports } from "./middleware/imports"; // Импортируем объект imports из файла middleware/imports.
-import { upload } from "./middleware/upload"; // Импортируем middleware upload из файла middleware/upload.
-import { endpoints } from "./helpers/endpoints";
+import { json, Response, urlencoded } from "express";
 import { types } from "./helpers/types";
+import { drop } from "./helpers/drop";
+import { endpoints } from "./helpers/endpoints";
+import { migrate } from "./helpers/migrate";
+import { crud } from "./middleware/crud";
+import { imports } from "./middleware/imports";
+import { upload } from "./middleware/upload";
 
 (async () => {
   const express = await import("express"); // Динамически импортируем express.
@@ -23,16 +23,22 @@ import { types } from "./helpers/types";
         .set("trust proxy", "linklocal") // Устанавливаем параметр доверия к прокси.
         .use(cors) // Добавляем middleware CORS.
         .use(json()) // Добавляем middleware для работы с JSON.
+        .use(urlencoded({ extended: true }))
         .delete("/api/drop", drop) // Настраиваем маршрут для удаления данных через /api/drop.
         .post("/api/migrate", migrate) // Настраиваем маршрут для миграции данных через /api/migrate.
-        .get("/api/endpoints", endpoints)
-        .get("/api/types", types)
+        .get("/api/endpoints", endpoints) // Настраиваем маршрут для получения эндпоинтов.
+        .get("/api/types", types) // Настраиваем маршрут для получения типов данных.
         .post("/api/upload", upload) // Настраиваем маршрут для загрузки файлов через /api/upload.
         .use("/api/public", express.static("src/backend/uploads")) // Настраиваем статический маршрут для публичного доступа к загруженным файлам.
-        .use("/api/crud", crud(imports.endpoints)); // Настраиваем маршрут для операций CRUD через /api/crud.
+        .use("/api/crud", crud(imports.endpoints)) // Настраиваем маршрут для операций CRUD через /api/crud.
+        .use((err: any, _: any, res: Response, __: any) => {
+          console.error(err.stack);
+          res.status(500).send("Something broke!");
+        });
+
       console.log(true); // Выводим сообщение об успешной настройке сервера.
     } catch (error) {
-      console.error(`Исключение экспресс-сервера: ${error}`); // Обрабатываем возможные ошибки и выводим их в консоль.
+      console.error(`Server setup exception: ${error}`); // Обрабатываем возможные ошибки и выводим их в консоль.
     }
   });
 })();

@@ -1,11 +1,11 @@
-import { Router } from "express"; // Импортируем Router из express для создания маршрутов.
-import { TController } from "./controller"; // Импортируем тип TController из контроллера.
+import { Router } from "express";
+import { TController } from "./controller/types";
 
 export const router = (endpoint: string, controller: TController): Router => {
   return ((
     router: Router, // Определяем локальную переменную router.
     endpoint: string, // Определяем локальную переменную endpoint.
-    controller: TController, // Определяем локальную переменную controller.
+    controller: TController // Определяем локальную переменную controller.
   ): Router => {
     return router
       .post(`${endpoint}`, controller.create) // Настраиваем маршрут POST для создания записи.
