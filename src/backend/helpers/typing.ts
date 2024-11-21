@@ -1,46 +1,36 @@
-import { TMigrate } from "./migrate";
+import { TMigrate } from "./migrate"; // Импортируем тип TMigrate из файла migrate.
 
 // Функция для преобразования строки в CamelCase
-const toCamelCase = (str: string): string => {
-  return str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+const toCamelCase = (str: string): string =>
+  str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+
+// Объект для сопоставления типов из базы данных с типами TypeScript
+const typeMap: { [key: string]: string } = {
+  string: "string",
+  integer: "number",
+  boolean: "boolean",
+  foreign: "string",
+  timestamp: "Date",
 };
 
-// Функция для генерации типов
-export const typing = (migrations: TMigrate[]): string => {
-  return migrations
-    .map((migrate: TMigrate) => {
-      const typeName = `T${migrate.table.charAt(0).toUpperCase()}${toCamelCase(
-        migrate.table.slice(1)
+// Функция для генерации типов TypeScript на основе миграций базы данных
+export const typing = (migrations: TMigrate[]): string =>
+  migrations
+    .map(({ table, fields }) => {
+      // Формируем имя типа на основе имени таблицы, преобразованного в CamelCase
+      const typeName = `T${table.charAt(0).toUpperCase()}${toCamelCase(
+        table.slice(1)
       )}`;
 
-      const fields = Object.entries(migrate.fields)
-        .map(([name, type]) => {
-          let tsType: string;
+      // Формируем строки с определением типов полей
+      const fieldEntries = Object.entries(fields)
+        .map(
+          ([name, type]) =>
+            `${name.replace(/\./g, "_")}:${typeMap[type] || "any"};`
+        ) // Заменяем точки в именах полей на подчеркивания и сопоставляем типы
+        .join(""); // Объединяем все строки в одну
 
-          switch (type) {
-            case "string":
-              tsType = "string";
-              break;
-            case "integer":
-              tsType = "number";
-              break;
-            case "boolean":
-              tsType = "boolean";
-              break;
-            case "foreign":
-              tsType = "string"; // Внешние ключи также будут строками
-              break;
-            default:
-              tsType = "any";
-          }
-
-          // Заменяем точки на подчеркивания в именах полей
-          const formattedName = name.replace(/\./g, "_");
-          return `${formattedName}: ${tsType};`;
-        })
-        .join("\n  ");
-
-      return `export type ${typeName} = {\n  ${fields}\n};`;
+      // Возвращаем строку с определением типа
+      return `export type ${typeName}={${fieldEntries}};`;
     })
-    .join("\n\n");
-};
+    .join(""); // Объединяем все определения типов в одну строку

@@ -1,34 +1,53 @@
-{
-  "create": [
-    {
-      "table": "products",
-      "fields": {
-        "id": "string",
-        "title": "string",
-        "description": "string",
-        "cost": "integer",
-        "discounted_price": "integer",
-        "article_number": "integer",
-        "id.id.products_photos": "foreign"
-      }
+[
+  {
+    "fields": {
+      "article_number": "integer",
+      "cost": "integer",
+      "created_at": "timestamp",
+      "description": "string",
+      "discounted_price": "integer",
+      "id": "string",
+      "id.id.products_photos": "foreign",
+      "title": "string",
+      "updated_at": "timestamp"
     },
-    {
-      "table": "photos",
-      "fields": {
-        "id": "string",
-        "src": "string",
-        "alt": "string"
-      }
+    "table": "products"
+  },
+  {
+    "fields": {
+      "alt": "string",
+      "created_at": "timestamp",
+      "id": "string",
+      "id.id.files": "foreign",
+      "src": "string",
+      "updated_at": "timestamp"
     },
-    {
-      "table": "products_photos",
-      "fields": {
-        "id": "string",
-        "products_id": "string",
-        "photos_id": "string",
-        "products_id.id.products": "foreign",
-        "photos_id.id.photos": "foreign"
-      }
-    }
-  ]
-}
+    "table": "photos"
+  },
+  {
+    "fields": {
+      "created_at": "timestamp",
+      "id": "string",
+      "photos_id": "string",
+      "photos_id.id.photos": "foreign",
+      "products_id": "string",
+      "products_id.id.products": "foreign",
+      "updated_at": "timestamp"
+    },
+    "table": "products_photos"
+  },
+  {
+    "fields": {
+      "created_at": "timestamp",
+      "file_name": "string",
+      "file_path": "string",
+      "file_size": "integer",
+      "file_url": "string",
+      "id": "string",
+      "original_name": "string",
+      "updated_at": "timestamp",
+      "upload_date": "timestamp"
+    },
+    "table": "files"
+  }
+]
