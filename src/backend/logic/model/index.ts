@@ -1,8 +1,18 @@
+import { TCreate, TRead, TReadReturn, TUpdate, TDelete } from "../../types";
 import { modelSet } from "./create";
 import { modelCut } from "./delete";
 import { modelGet } from "./read";
-import { TModel } from "./types";
 import { modelPut } from "./update";
+
+/**
+ * Типы модели.
+ */
+export type TModel<T> = {
+  create: ({ payload }: TCreate<T[]>) => Promise<T[]>; // Определяем тип для создания записи.
+  read: (request?: TRead) => Promise<TReadReturn<T>>; // Определяем тип для чтения записи.
+  update: ({ id, payload }: TUpdate<T>) => Promise<T | null>; // Определяем тип для обновления записи.
+  delete: ({ id }: TDelete) => Promise<T | null>; // Определяем тип для удаления записи.
+};
 
 /**
  * Функция для создания модели.

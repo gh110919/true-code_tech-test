@@ -1,4 +1,4 @@
-import { orm } from "@/backend/middleware/orm";
+import { orm } from "../../middleware/orm";
 import { TDelete } from "./types";
 
 /**

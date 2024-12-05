@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { TService } from "../service/types";
+import { TService } from "../service";
 import { control } from "./control";
 
 /**
@@ -9,11 +9,12 @@ import { control } from "./control";
  */
 export const controllerPut = <T>(service: TService<T>) => {
   return async (request: Request, response: Response) => {
+    console.log("request", request.body);
     // Вызываем сервис для обновления записи и отправляем ответ.
     control<T | null>(
       response,
       service.update({
-        id: String(request.params.id || request.query.id || request.body.id), // Получаем id записи.
+        id: String(request.body.id || request.params.id || request.query.id), // Получаем id записи.
         payload: request.body, // Получаем данные для обновления.
       })
     );

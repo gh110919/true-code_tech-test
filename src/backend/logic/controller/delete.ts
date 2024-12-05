@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { TService } from "../service/types";
+import { TService } from "../service";
 import { control } from "./control";
 
 /**

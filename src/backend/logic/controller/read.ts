@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
-import { TypeArrayNull } from "../model/types";
-import { TService } from "../service/types";
-import { control } from "./control";
+import { TService } from "../service";
 import { notEmpty } from "./utils";
+import { control } from "./control";
 
 /**
  * Функция контроллера для чтения записи.
@@ -18,40 +17,30 @@ export const controllerGet = <T>(service: TService<T>) => {
       limit: parseInt(query.limit as string, 10) || undefined,
       offset: parseInt(query.offset as string, 10) || undefined,
     };
-
+    
+    type Order = "asc" | "desc" | undefined;
     // Настраиваем параметры сортировки.
     const sorting = {
       sortBy: (query.sortBy as string) || undefined,
-      order: (query.order as "asc" | "desc" | undefined) || undefined,
+      order: (query.order as Order) || undefined,
     };
 
-    // Проверяем, не пустое ли тело запроса и читаем данные с его помощью.
-    if (notEmpty(body)) {
-      control<TypeArrayNull<T>>(
-        response,
-        service.read({ body, pagination, sorting })
-      );
-    }
-    // Проверяем, не пустые ли параметры запроса и читаем данные с их помощью.
-    else if (notEmpty(query)) {
-      control<TypeArrayNull<T>>(
-        response,
-        service.read({ query, pagination, sorting })
-      );
-    }
-    // Проверяем, не пустые ли параметры маршрута и читаем данные с их помощью.
-    else if (notEmpty(params)) {
-      control<TypeArrayNull<T>>(
-        response,
-        service.read({ params, pagination, sorting })
-      );
-    }
-    // Если нет условий, читаем данные с учетом пагинации и сортировки.
-    else {
-      control<TypeArrayNull<T>>(
-        response,
-        service.read({ pagination, sorting })
-      );
-    }
+    // Настраиваем параметры фильтрации.
+    // const filters = notEmpty(query)
+    //   ? query
+    //   : notEmpty(params)
+    //   ? params
+    //   : notEmpty(body)
+    //   ? body
+    //   : undefined;
+
+    // Возвращаем данные и количество записей
+    control(
+      response,
+      service.read({
+        /* filters, */ pagination,
+        sorting,
+      })
+    );
   };
 };

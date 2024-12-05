@@ -1,6 +1,1 @@
-[
-  { "endpoint": "/products", "table": "products" },
-  { "endpoint": "/photos", "table": "photos" },
-  { "endpoint": "/products_photos", "table": "products_photos" },
-  { "endpoint": "/files", "table": "files" }
-]
+[{"url":"http://localhost:3080/api/crud/products","endpoint":"/products","table":"products","type":"TProducts"},{"url":"http://localhost:3080/api/crud/photos","endpoint":"/photos","table":"photos","type":"TPhotos"},{"url":"http://localhost:3080/api/crud/files","endpoint":"/files","table":"files","type":"TFiles"},{"url":"http://localhost:3080/api/crud/products_photos_files","endpoint":"/products_photos_files","table":"products_photos_files","type":"TProductsPhotosFiles"}]

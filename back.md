@@ -4,43 +4,57 @@ http://localhost/api/migrate
 
 ```json
 {
-  // Объект create содержит массив описаний таблиц для создания
   "create": [
     {
-      // Описание первой таблицы "products"
-      "table": "products",
-      // Поля таблицы "products"
       "fields": {
-        "id": "string", // Строковое поле "id"
-        "title": "string", // Строковое поле "title"
-        "description": "string", // Строковое поле "description"
-        "cost": "integer", // Поле "cost" целочисленного типа
-        "discounted_price": "integer", // Поле "discounted_price" целочисленного типа
-        "article_number": "integer", // Поле "article_number" целочисленного типа
-        "id.id.products_photos": "foreign" // Внешний ключ, ссылающийся на поле "id" таблицы "products_photos"
-      }
+        "article_number": "integer",
+        "cost": "integer",
+        "created_at": "timestamp",
+        "description": "string",
+        "discounted_price": "integer",
+        "id": "string",
+        "title": "string",
+        "updated_at": "timestamp"
+      },
+      "table": "products"
     },
     {
-      // Описание второй таблицы "photos"
-      "table": "photos",
-      // Поля таблицы "photos"
       "fields": {
-        "id": "string", // Строковое поле "id"
-        "src": "string", // Строковое поле "src"
-        "alt": "string" // Строковое поле "alt"
-      }
+        "alt": "string",
+        "created_at": "timestamp",
+        "id": "string",
+        "id.id.files": "foreign",
+        "src": "string",
+        "updated_at": "timestamp"
+      },
+      "table": "photos"
     },
     {
-      // Описание третьей таблицы "products_photos"
-      "table": "products_photos",
-      // Поля таблицы "products_photos"
       "fields": {
-        "id": "string", // Строковое поле "id"
-        "products_id": "string", // Строковое поле "products_id"
-        "photos_id": "string", // Строковое поле "photos_id"
-        "products_id.id.products": "foreign", // Внешний ключ, ссылающийся на поле "id" таблицы "products"
-        "photos_id.id.photos": "foreign" // Внешний ключ, ссылающийся на поле "id" таблицы "photos"
-      }
+        "created_at": "timestamp",
+        "file_name": "string",
+        "file_path": "string",
+        "file_size": "integer",
+        "id": "string",
+        "original_name": "string",
+        "updated_at": "timestamp",
+        "upload_date": "timestamp"
+      },
+      "table": "files"
+    },
+    {
+      "fields": {
+        "created_at": "timestamp",
+        "files_id": "string",
+        "files_id.id.files": "foreign",
+        "id": "string",
+        "photos_id": "string",
+        "photos_id.id.photos": "foreign",
+        "products_id": "string",
+        "products_id.id.products": "foreign",
+        "updated_at": "timestamp"
+      },
+      "table": "products_photos_files"
     }
   ]
 }

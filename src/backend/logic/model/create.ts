@@ -1,16 +1,25 @@
-import { orm } from "@/backend/middleware/orm";
 import { v4 } from "uuid";
 import { TCreate } from "./types";
+import { orm } from "../../middleware/orm";
 
 /**
- * Функция модели для создания записи.
+ * Функция модели для создания записей.
  * @param table - Название таблицы в базе данных.
- * @returns Функция для создания новой записи.
+ * @returns Функция для создания новых записей.
  */
 export const modelSet = <T>(table: string) => {
-  return async ({ payload }: TCreate<T>): Promise<T> => {
-    const id = v4(); // Генерируем уникальный идентификатор для новой записи.
-    await orm(table).insert({ ...payload, id }); // Вставляем новую запись в таблицу базы данных.
-    return await orm(table).where({ id }).first(); // Возвращаем вставленную запись.
+  return async ({ payload }: TCreate<T[]>): Promise<T[]> => {
+    const created_at = orm.fn.now();
+    const records = payload.map((item) => ({
+      ...item,
+      id: v4(), // Генерируем уникальный идентификатор для каждой новой записи.
+      created_at,
+    }));
+
+    await orm(table).insert(records); // Вставляем новые записи в таблицу базы данных.
+    return await orm(table).whereIn(
+      "id",
+      records.map(({ id }) => id)
+    ); // Возвращаем вставленные записи.
   };
 };

@@ -1,4 +1,4 @@
-import { orm } from "@/backend/middleware/orm";
+import { orm } from "../../middleware/orm";
 import { TUpdate } from "./types";
 
 /**
@@ -8,7 +8,10 @@ import { TUpdate } from "./types";
  */
 export const modelPut = <T>(table: string) => {
   return async ({ id, payload }: TUpdate<T>): Promise<T | null> => {
-    await orm(table).where({ id }).update(payload); // Обновляем запись с указанным id.
+    const updated_at = orm.fn.now();
+    await orm(table)
+      .where({ id })
+      .update({ ...payload, updated_at }); // Обновляем запись с указанным id.
     return orm(table).where({ id }).first(); // Возвращаем обновленную запись.
   };
 };

@@ -1,53 +1,59 @@
-[
-  {
-    "fields": {
-      "article_number": "integer",
-      "cost": "integer",
-      "created_at": "timestamp",
-      "description": "string",
-      "discounted_price": "integer",
-      "id": "string",
-      "id.id.products_photos": "foreign",
-      "title": "string",
-      "updated_at": "timestamp"
+{
+  "create": [
+    {
+      "fields": {
+        "article_number": "integer",
+        "cost": "integer",
+        "created_at": "timestamp",
+        "description": "string",
+        "discounted_price": "integer",
+        "id": "string",
+        "title": "string",
+        "updated_at": "timestamp"
+      },
+      "table": "products"
     },
-    "table": "products"
-  },
-  {
-    "fields": {
-      "alt": "string",
-      "created_at": "timestamp",
-      "id": "string",
-      "id.id.files": "foreign",
-      "src": "string",
-      "updated_at": "timestamp"
+    {
+      "fields": {
+        "alt": "string",
+        "created_at": "timestamp",
+        "id": "string",
+        "src": "string",
+        "updated_at": "timestamp"
+      },
+      "table": "photos"
     },
-    "table": "photos"
-  },
-  {
-    "fields": {
-      "created_at": "timestamp",
-      "id": "string",
-      "photos_id": "string",
-      "photos_id.id.photos": "foreign",
-      "products_id": "string",
-      "products_id.id.products": "foreign",
-      "updated_at": "timestamp"
+    {
+      "fields": {
+        "buffer": "string",
+        "destination": "string",
+        "encoding": "string",
+        "fieldname": "string",
+        "filename": "string",
+        "id": "string",
+        "mimetype": "string",
+        "originalname": "string",
+        "path": "string",
+        "size": "integer",
+        "stream": "string",
+        "upload_date": "timestamp",
+        "url": "string"
+      },
+      "table": "files"
     },
-    "table": "products_photos"
-  },
-  {
-    "fields": {
-      "created_at": "timestamp",
-      "file_name": "string",
-      "file_path": "string",
-      "file_size": "integer",
-      "file_url": "string",
-      "id": "string",
-      "original_name": "string",
-      "updated_at": "timestamp",
-      "upload_date": "timestamp"
-    },
-    "table": "files"
-  }
-]
+    {
+      "fields": {
+        "created_at": "timestamp",
+        "files_id": "string",
+        "files_id.id.files": "foreign",
+        "id": "string",
+        "photos_id": "string",
+        "photos_id.id.photos": "foreign",
+        "products_id": "string",
+        "products_id.id.products": "foreign",
+        "updated_at": "timestamp"
+      },
+      "table": "products_photos_files"
+    }
+  ]
+}

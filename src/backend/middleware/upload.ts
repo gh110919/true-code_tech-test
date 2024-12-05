@@ -4,7 +4,7 @@ import { basename } from "path";
 import { v4 } from "uuid";
 import { orm } from "./orm";
 
-// Экспортируемая функция для загрузки файла
+// Экспортируемая функция для загрузки файлов
 export const upload = async (req: Request, res: Response) => {
   // Импортируем Multer динамически
   const multer = (await import("multer")).default;
@@ -25,64 +25,63 @@ export const upload = async (req: Request, res: Response) => {
           cb(null, `${v4()}_${basename(sanitizedFilename)}`);
         },
       }),
-    }).single("file");
+    }).array("files"); // Изменяем на array для загрузки массива файлов
 
-    // Выполнение промежуточного слоя загрузки файла
+    // Выполнение промежуточного слоя загрузки файлов
     uploadMiddleware(req, res, async (err) => {
-      // Обработка ошибок загрузки файла
+      // Обработка ошибок загрузки файлов
       if (err) {
-        console.log("Ошибка при загрузке файла:", err);
+        console.log("Ошибка при загрузке файлов:", err);
         return res.status(500).json({
           success: false,
-          message: `Ошибка при загрузке файла: ${err.message}`,
+          message: `Ошибка при загрузке файлов: ${err.message}`,
         });
       }
 
-      // Проверка наличия файла
-      if (!req.file) {
-        console.log("Файл не был загружен");
+      // Проверка наличия файлов и приведение типа к массиву
+      const files = req.files as Express.Multer.File[]; // Приведение типов для `req.files`
+
+      if (!files || files.length === 0) {
+        console.log("Файлы не были загружены");
         return res.status(400).json({
           success: false,
-          message: "Файл не был загружен",
+          message: "Файлы не были загружены",
         });
       }
 
-      // Получение информации о файле из запроса
-      const { originalname, filename, size, path } = req.file;
-      const fileId = v4();
+      const filesData = [];
 
-      // Создание HTTP ссылки на файл
-      const fileUrl = `${req.protocol}://${req.get(
-        "host"
-      )}/api/public/${filename}`;
+      // Обработка каждого загруженного файла
+      for (const file of files) {
+        const insertFile = {
+          id: v4(), // Генерация уникального идентификатора для записи
+          url: `${req.protocol}://${req.get("host")}/api/public/${
+            file.filename
+          }`,
+          upload_date: orm.fn.now(), // Дата загрузки файла
+          ...file,
+        };
 
-      // Внесение данных о файле в базу данных
-      await orm("files").insert({
-        id: fileId, // Генерация уникального идентификатора для записи
-        original_name: originalname, // Оригинальное имя файла
-        file_name: filename, // Имя файла на сервере
-        file_size: size, // Размер файла
-        file_url: fileUrl,
-        file_path: path, // Путь к файлу на сервере
-        upload_date: orm.fn.now(), // Дата загрузки файла
-      });
+        // Внесение данных о файле в базу данных
+        await orm("files").insert(insertFile);
 
-      // Отправка успешного ответа с ID файла и ссылкой
+        // Сохранение данных о файле для ответа
+        filesData.push(insertFile);
+      }
+
+      // Отправка успешного ответа с данными о всех файлах
       res.status(200).json({
         success: true,
-        message: {
-          status: "Файл успешно загружен и данные о нем внесены в базу данных",
-          id: fileId, // Возвращаем ID файла
-          url: fileUrl, // Возвращаем ссылку на файл
-        },
+        message: "Файлы успешно загружены и данные о них внесены в базу данных",
+        files: filesData, // Возвращаем данные о всех файлах
       });
     });
   } catch (error) {
     // Обработка ошибок и отправка ответа с ошибкой
-    console.log("Произошла ошибка при загрузке файла:", error);
+    console.log("Произошла ошибка при загрузке файлов:", error);
     res.status(500).json({
       success: false,
-      message: `Исключение при загрузке файла: ${error}`,
+      message: `Исключение при загрузке файлов: ${error}`,
     });
   }
 };

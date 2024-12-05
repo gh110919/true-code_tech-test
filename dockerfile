@@ -11,6 +11,6 @@ ENV PM2_SECRET_KEY=${arg_pm2_sk}
 
 RUN bun i 
 
-EXPOSE 3000 4173
+EXPOSE 3000 3080 3443
 
-CMD ["pm2-runtime", "start", "ecosystem.config.cjs"]
+CMD ["pm2-runtime", "start", "ecosystem.prod.cjs"]
